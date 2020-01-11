@@ -9,55 +9,31 @@ class Image
     @image.each {|x| puts x.join}
   end
 
-end
+  def blur_coords!
+    blur_coords = []
 
-def blur_coords!
+    @image.each_with_index do |row, i|
+      row.each_with_index do |x, j|
+        blur_coords << [i, j] if x == 1
+      end
+    end
 
-  blur_coords = []
-
-  @image.each_with_index do |row, i|
-
-    row.each_with_index do |x, row_i|
-
-      blur_coords << [i, row_i] if x == 1
-
+    blur_coords.each do |i, j|                              # 1, 1
+      @image[i][j + 1] = 1 if j + 1 <= @image[i].length - 1 # 1, 2
+      @image[i][j - 1] = 1 if j - 1 >= 0                    # 1, 0
+      @image[i + 1][j] = 1 if i + 1 <= @image.length - 1    # 2, 1
+      @image[i - 1][j] = 1 if i - 1 >= 0                    # 0, 1
+    end
   end
-
 end
-
-blur_coords.each do |coord|
-
-      @image[coord[0]][coord[1] + 1] = 1 if coord[1] + 1 <= @image[coord[0]].length - 1
-
-      @image[coord[0]][coord[1] - 1] = 1 if coord[1] - 1 >= 0
-
-      @image[coord[0] + 1][coord[1]] = 1 if coord[0] + 1 <= @image.length - 1
-
-      @image[coord[0] - 1][coord[1]] = 1 if coord[0] - 1 >= 0
-
-  end
-
-end
-
-end
-
 
 image = Image.new([
-
   [0, 0, 0, 0, 0, 0],
-
   [0, 1, 0, 0, 0, 0],
-
   [0, 0, 0, 0, 0, 0],
-
-  [0, 0, 0, 0, 0, 0],
-
+  [1, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 1],
-
   [0, 0, 0, 0, 0, 0]
-
 ])
-
 image.blur_coords!
-
 image.output_image
